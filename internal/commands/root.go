@@ -15,6 +15,7 @@ var (
 	sshUser                    string
 	sshPass                    string
 	dangerouslySkipPermissions bool
+	extraDirs                  []string
 )
 
 func NewRootCmd() *cobra.Command {
@@ -52,7 +53,7 @@ Example:
 
 			// Backward compatibility: run command directly
 			// Use interactive mode for better terminal support
-			return runCommand(context.Background(), vmImage, cpuCount, memoryMB, sshUser, sshPass, true, args)
+			return runCommand(context.Background(), vmImage, cpuCount, memoryMB, sshUser, sshPass, true, extraDirs, args)
 		},
 	}
 
@@ -63,6 +64,7 @@ Example:
 	cmd.PersistentFlags().StringVar(&sshUser, "ssh-user", "admin", "SSH username")
 	cmd.PersistentFlags().StringVar(&sshPass, "ssh-pass", "admin", "SSH password")
 	cmd.PersistentFlags().BoolVar(&dangerouslySkipPermissions, "dangerously-skip-permissions", false, "Skip permission checks (use with caution)")
+	cmd.PersistentFlags().StringArrayVar(&extraDirs, "dir", nil, "Additional directories to mount into the VM (can be specified multiple times)")
 
 	// Stop parsing flags after the first non-flag argument
 	cmd.Flags().SetInterspersed(false)

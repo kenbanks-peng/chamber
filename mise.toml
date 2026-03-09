@@ -1,0 +1,11 @@
+[tools]
+go = "latest"
+"go:github.com/golangci/golangci-lint/v2/cmd/golangci-lint" = "latest"
+
+[tasks.build]
+description = "Build the chamber binary"
+run = "go build -o chamber ./cmd/chamber"
+
+[tasks.lint]
+description = "Run golangci-lint"
+run = "golangci-lint run -v"
