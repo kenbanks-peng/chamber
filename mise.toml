@@ -1,10 +1,29 @@
+[vars]
+cmd = "github.com/cirruslabs/chamber/cmd/chamber"
+bin = "bin/chamber"
+
 [tools]
 go = "latest"
 "go:github.com/golangci/golangci-lint/v2/cmd/golangci-lint" = "latest"
 
+[tasks.run]
+description = "Run"
+run = "wgo run {{vars.cmd}}"
+
 [tasks.build]
-description = "Build the chamber binary"
-run = "go build -o chamber ./cmd/chamber"
+description = "Build"
+run = """
+#!/bin/bash
+VERSION=$(git tag --points-at HEAD --list 'v[0-9]*.[0-9]*.[0-9]*' | head -n1)
+if [ -z "$VERSION" ]; then
+  VERSION="dev-$(git rev-parse --short HEAD)"
+fi
+go build -ldflags "-X 'main.version=$VERSION'" -o {{vars.bin}} {{vars.cmd}}
+"""
+
+[tasks.tidy]
+description = "Tidy go mod"
+run = "go mod tidy"
 
 [tasks.lint]
 description = "Run golangci-lint"
