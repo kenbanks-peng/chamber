@@ -152,6 +152,15 @@ func (e *Executor) ExecuteInteractive(ctx context.Context, command string, args 
 	return terminal.RunInteractiveCommand(ctx, fullCommand)
 }
 
+// ExecuteInteractiveShell opens an interactive login shell in the mounted working directory
+func (e *Executor) ExecuteInteractiveShell(ctx context.Context) error {
+	terminal := ssh.NewTerminal(e.sshClient)
+
+	fullCommand := fmt.Sprintf("zsh -l -c %q", fmt.Sprintf("cd %s && exec zsh -l", e.mountedWorkDir))
+
+	return terminal.RunInteractiveCommand(ctx, fullCommand)
+}
+
 func (e *Executor) streamOutput(reader io.Reader, writer io.Writer) {
 	scanner := bufio.NewScanner(reader)
 	for scanner.Scan() {

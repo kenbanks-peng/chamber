@@ -85,12 +85,21 @@ func (vm *VM) Configure(ctx context.Context, cpu uint32, memory uint32) error {
 }
 
 func (vm *VM) Start(ctx context.Context, directoryMounts []DirectoryMount) {
+	vm.StartWithOptions(ctx, directoryMounts, false)
+}
+
+func (vm *VM) StartWithOptions(ctx context.Context, directoryMounts []DirectoryMount, graphical bool) {
 	vm.wg.Add(1)
 
 	go func() {
 		defer vm.wg.Done()
 
-		args := []string{"--no-graphics", "--no-clipboard", "--no-audio"}
+		var args []string
+		if graphical {
+			args = []string{"--no-clipboard", "--no-audio"}
+		} else {
+			args = []string{"--no-graphics", "--no-clipboard", "--no-audio"}
+		}
 
 		for _, dm := range directoryMounts {
 			var opts []string

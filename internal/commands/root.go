@@ -73,6 +73,7 @@ Example:
 	cmd.AddCommand(NewInitCmd())
 	cmd.AddCommand(NewClaudeCmd())
 	cmd.AddCommand(NewCodexCmd())
+	cmd.AddCommand(NewVMCmd())
 
 	return cmd
 }
