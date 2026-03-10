@@ -158,7 +158,15 @@ func (e *Executor) ExecuteInteractiveShell(ctx context.Context) error {
 
 	fullCommand := fmt.Sprintf("zsh -l -c %q", fmt.Sprintf("cd %s && exec zsh -l", e.mountedWorkDir))
 
-	return terminal.RunInteractiveCommand(ctx, fullCommand)
+	err := terminal.RunInteractiveCommand(ctx, fullCommand)
+	if err != nil {
+		// Ignore exit errors from interactive shells — the user intentionally exited
+		if _, ok := err.(*gossh.ExitError); ok {
+			return nil
+		}
+		return err
+	}
+	return nil
 }
 
 func (e *Executor) streamOutput(reader io.Reader, writer io.Writer) {
